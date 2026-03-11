@@ -1,0 +1,1 @@
+# Automate AWS Resource Creation with Bash
