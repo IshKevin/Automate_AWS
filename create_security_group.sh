@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #Variable 
 SG_NAME="developer-sg"
@@ -37,7 +38,9 @@ aws ec2 authorize-security-group-ingress \
     --cidr 0.0.0.0/0
 
 # Display security group details
+echo "======================================"
 echo "Security Group Rules:"
 aws ec2 describe-security-groups \
     --group-ids "$SG_ID" \
     --query "SecurityGroups[0].IpPermissions"
+echo "======================================"
