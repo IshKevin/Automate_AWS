@@ -4,13 +4,18 @@ set -e
 #Variable
 KEY_NAME="AutomationLabKey"
 INSTANCE_TYPE="t2.micro"
+TAG_KEY="Project"
+TAG_VALUE="AutomationLab"
+
+
+echo "Fetching latest Amazon Linux 2 AMI..."
+
 AMI_ID=$(aws ec2 describe-images \
     --owners amazon \
     --filters "Name=name,Values=amzn2-ami-hvm-*-x86_64-gp2" \
     --query "Images | sort_by(@,&CreationDate)[-1].ImageId" \
     --output text)
-TAG_KEY="Project"
-TAG_VALUE="AutomationLab"
+
 
 echo "Using AMI ID: $AMI_ID"
 
@@ -21,6 +26,8 @@ KEY_CHECK=$(aws ec2 describe-key-pairs \
     --query "KeyPairs[0].KeyName" \
     --output text 2>/dev/null)
 
+
+# Check if key pair exists
 
 if [ "$KEY_CHECK" == "$KEY_NAME" ]; then
     echo "Key pair $KEY_NAME already exists. Skipping creation."
@@ -47,15 +54,22 @@ INSTANCE_ID=$(aws ec2 run-instances \
     --query "Instances[0].InstanceId" \
     --output text)
 
+echo "Instance created: $INSTANCE_ID"
+
+
 echo "Waiting for instance to get public IP..."
 
+aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+
+# Get public IP
 PUBLIC_IP=$(aws ec2 describe-instances \
     --instance-ids $INSTANCE_ID \
     --query "Reservations[0].Instances[0].PublicIpAddress" \
     --output text)
 
 # Display instance details
-
+echo "======================================"
 echo "EC2 instance created successfully!"
 echo "Instance ID: $INSTANCE_ID"
 echo "Public IP: $PUBLIC_IP"
+echo "======================================"
