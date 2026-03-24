@@ -66,7 +66,9 @@ Before running the scripts, ensure you have:
 
 Configured AWS CLI with valid credentials and verified access.
 
----
+#### Screenshot
+
+![AWS CLI Setup](images/setup.png)
 
 ### Task 2: EC2 Instance Automation (`create_ec2.sh`)
 
