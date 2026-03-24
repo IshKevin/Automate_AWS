@@ -21,6 +21,11 @@ SG_ID=$(aws ec2 create-security-group \
     --query "GroupId" \
     --output text)
 
+echo "Tagging Security Group: $SG_ID"
+aws ec2 create-tags \
+    --resources "$SG_ID" \
+    --tags Key=Project,Value=AutomationLab
+
 echo "Securty Group Created: $SG_ID"
 
 # Allow SSH (port 22)
